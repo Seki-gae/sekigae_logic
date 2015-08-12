@@ -35,7 +35,7 @@ public class DoChangeSeat {
 		mC.setLike(wB);
 		mD.setLike(wA);
 		wA.setLike(mB);
-		wB.setLike(mA);
+		wB.setLike(mC);
 		wC.setLike(mB);
 		wD.setLike(mC);
 		

@@ -5,6 +5,12 @@ public class ChangeSeat {
 	Globals globals;
 	Member[] rightSeat = new Member[7];
 	Member[] leftSeat = new Member[7];
+	int[] seatOrder = {3,2,1,4,5};
+	int m_member_num;
+	int w_member_num;
+	Member empty = new Member("0");
+	ArrayList<Member> likedMen = new ArrayList<>();
+	ArrayList<Member> likedWomen = new ArrayList<>();
 	
 	public ChangeSeat(Globals globals){
 		this.globals = globals;
@@ -22,9 +28,9 @@ public class ChangeSeat {
 		Member wC = globals.memberList.get(7);
 		Member wD = globals.memberList.get(8);
 		Member wE = globals.memberList.get(9);
-		Member empty = new Member("0");
-		int m_member_num = globals.m_member_num;
-		int w_member_num = globals.w_member_num;
+		
+		m_member_num = globals.m_member_num;
+		w_member_num = globals.w_member_num;
 
 
 
@@ -63,13 +69,13 @@ public class ChangeSeat {
 
 
 		//気になるポイント２以上の人を探す
-		ArrayList<Member> likedMen = new ArrayList<>();
+		
 		for(int i=0; i<men.size(); i++){
 			if(men.get(i).getLiked() > 1){
 				likedMen.add(men.get(i));
 			}
 		}
-		ArrayList<Member> likedWomen = new ArrayList<>();
+		
 		for(int i=0; i<women.size(); i++){
 			if(women.get(i).getLiked() > 1){
 				likedWomen.add(women.get(i));
@@ -192,6 +198,12 @@ public class ChangeSeat {
 				}
 			}
 		}
+		
+		//出力
+		System.out.println("＊＊＊①終了時の配置＊＊＊");
+		for(int i=1; i<6; i++){
+			System.out.println("左側　"+ leftSeat[i].getName() + "　　右側　" + rightSeat[i].getName());
+		}
 
 		//↑↑↑↑ここまでで①気になるポイント２以上の人の配置完了
 
@@ -211,35 +223,63 @@ public class ChangeSeat {
 			}
 		}
 		
-		int[] menSeatNum = {3,2,1,4,5};
 		
-		//ポイント１男を配置
-		for(int i=0; i<likedMen.size(); i++){
-			for(int j=0; j<m_member_num; j++){
-				if(j%2 == 0 && rightSeat[menSeatNum[j]] == empty){
-					if(checkLike(likedMen.get(i), rightSeat, menSeatNum[j])){
-						rightSeat[menSeatNum[j]] = likedMen.get(i);
-						likedMen.get(i).setSit(1);
+		
+		//ポイント１の人の配置処理を３回繰り返す
+		for(int trial=0; trial<3; trial++){
+
+			//ポイント１男を配置
+			for(int i=0; i<likedMen.size(); i++){
+				if(likedMen.get(i).getSit() == 0){
+					for(int j=0; j<m_member_num; j++){
+						if(j%2 == 0 && rightSeat[seatOrder[j]] == empty){
+							if(checkLike(likedMen.get(i), rightSeat, seatOrder[j])){
+								rightSeat[seatOrder[j]] = likedMen.get(i);
+								likedMen.get(i).setSit(1);
+							}
+						}
+						if(j%2 == 1 && leftSeat[seatOrder[j]] == empty){
+							if(checkLike(likedMen.get(i), leftSeat, seatOrder[j])){
+								leftSeat[seatOrder[j]] = likedMen.get(i);
+								likedMen.get(i).setSit(1);
+							}
+						}
 					}
 				}
-				if(j%2 == 1 && leftSeat[menSeatNum[j]] == empty){
-					if(checkLike(likedMen.get(i), leftSeat, menSeatNum[j])){
-						leftSeat[menSeatNum[j]] = likedMen.get(i);
-						likedMen.get(i).setSit(1);
+			}
+
+			//ポイント１女を配置
+			for(int i=0; i<likedWomen.size(); i++){
+				if(likedWomen.get(i).getSit() == 0){
+					for(int j=0; j<w_member_num; j++){
+						if(j%2 == 1 && rightSeat[seatOrder[j]] == empty){
+							if(checkLike(likedWomen.get(i), rightSeat, seatOrder[j])){
+								rightSeat[seatOrder[j]] = likedWomen.get(i);
+								likedWomen.get(i).setSit(1);
+								break;
+							}
+						}
+						if(j%2 == 0 && leftSeat[seatOrder[j]] == empty){
+							if(checkLike(likedWomen.get(i), leftSeat, seatOrder[j])){
+								leftSeat[seatOrder[j]] = likedWomen.get(i);
+								likedWomen.get(i).setSit(1);
+								break;
+							}
+						}
 					}
 				}
 			}
 		}
-		
-
 
 
 		//出力
+		System.out.println("＊＊＊最終的な配置＊＊＊");
 		for(int i=1; i<6; i++){
 			System.out.println("左側　"+ leftSeat[i].getName() + "　　右側　" + rightSeat[i].getName());
 		}
 	}
 
+	//隣の席の人が自分のことを好き、または自分が隣の席の人を好きな場合trueを返すメソッド
 	public boolean checkLike(Member member, Member[] seat, int where){
 		if(member.getLike() == seat[where-1] || member.getLike() == seat[where+1]){
 			return true;
@@ -247,6 +287,51 @@ public class ChangeSeat {
 			return true;
 		}else{
 			return false;
+		}
+	}
+	
+	//ポイント１の人の配置処理
+	public void setPoint1Member() {
+		//ポイント１男を配置
+		for(int i=0; i<likedMen.size(); i++){
+			if(likedMen.get(i).getSit() == 0){
+				for(int j=0; j<m_member_num; j++){
+					if(j%2 == 0 && rightSeat[seatOrder[j]] == empty){
+						if(checkLike(likedMen.get(i), rightSeat, seatOrder[j])){
+							rightSeat[seatOrder[j]] = likedMen.get(i);
+							likedMen.get(i).setSit(1);
+						}
+					}
+					if(j%2 == 1 && leftSeat[seatOrder[j]] == empty){
+						if(checkLike(likedMen.get(i), leftSeat, seatOrder[j])){
+							leftSeat[seatOrder[j]] = likedMen.get(i);
+							likedMen.get(i).setSit(1);
+						}
+					}
+				}
+			}
+		}
+
+		//ポイント１女を配置
+		for(int i=0; i<likedWomen.size(); i++){
+			if(likedWomen.get(i).getSit() == 0){
+				for(int j=0; j<w_member_num; j++){
+					if(j%2 == 1 && rightSeat[seatOrder[j]] == empty){
+						if(checkLike(likedWomen.get(i), rightSeat, seatOrder[j])){
+							rightSeat[seatOrder[j]] = likedWomen.get(i);
+							likedWomen.get(i).setSit(1);
+							break;
+						}
+					}
+					if(j%2 == 0 && leftSeat[seatOrder[j]] == empty){
+						if(checkLike(likedWomen.get(i), leftSeat, seatOrder[j])){
+							leftSeat[seatOrder[j]] = likedWomen.get(i);
+							likedWomen.get(i).setSit(1);
+							break;
+						}
+					}
+				}
+			}
 		}
 	}
 
