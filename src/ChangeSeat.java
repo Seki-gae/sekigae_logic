@@ -1,4 +1,7 @@
 import java.util.ArrayList;
+import java.util.Collections;
+
+import org.omg.CosNaming.NamingContextExtPackage.AddressHelper;
 
 public class ChangeSeat {
 	
@@ -74,12 +77,14 @@ public class ChangeSeat {
 				likedMen.add(men.get(i));
 			}
 		}
+		Collections.shuffle(likedMen);
 		
 		for(int i=0; i<women.size(); i++){
 			if(women.get(i).getLiked() > 1){
 				likedWomen.add(women.get(i));
 			}
 		}
+		Collections.shuffle(likedWomen);
 
 		//↓↓↓↓↓①ポイント２以上の人を全て配置する。
 
@@ -215,12 +220,15 @@ public class ChangeSeat {
 				likedMen.add(men.get(i));
 			}
 		}
+		Collections.shuffle(likedMen);
+		
 		likedWomen.clear();
 		for(int i=0; i<women.size(); i++){
 			if(women.get(i).getLiked() == 1){
 				likedWomen.add(women.get(i));
 			}
 		}
+		Collections.shuffle(likedWomen);
 		
 		//ポイント１の人の配置処理を３回繰り返す
 		for(int trial=0; trial<3; trial++){
@@ -248,6 +256,48 @@ public class ChangeSeat {
 		}
 		
 		//↑↑↑↑ここまでで②気になるポイント１以上の人の配置完了
+		
+		//↓↓↓↓③まだ席が決まっていない人を配置していく
+		likedMen.clear();
+		for(int i=0; i<m_member_num; i++){
+			if(men.get(i).getSit() == 0){
+				likedMen.add(men.get(i));
+			}
+		}
+		Collections.shuffle(likedMen);
+		
+		likedWomen.clear();
+		for(int i=0; i<w_member_num; i++){
+			if(women.get(i).getSit() == 0){
+				likedWomen.add(women.get(i));
+			}
+		}
+		Collections.shuffle(likedWomen);
+		//System.out.println(likedWomen.get(0).getName());
+		//System.out.println(likedWomen.get(1).getName());
+		
+		//配置処理を３回繰り返す
+		for(int trial=0; trial<3; trial++){
+			setPoint1Member();
+		}
+		
+		setPoint1MemberRandom();
+		
+
+		//配置処理を３回繰り返す
+		for(int trial=0; trial<3; trial++){
+			setPoint1Member();
+		}
+		
+		setPoint1MemberRandom();
+		
+
+		//配置処理を３回繰り返す
+		for(int trial=0; trial<3; trial++){
+			setPoint1Member();
+		}
+		
+		setPoint1MemberRandom();
 
 
 		//出力
@@ -256,6 +306,8 @@ public class ChangeSeat {
 			System.out.println("左側　"+ leftSeat[i].getName() + "　　右側　" + rightSeat[i].getName());
 		}
 	}
+	
+	
 
 	//隣の席の人が自分のことを好き、または自分が隣の席の人を好きな場合trueを返すメソッド
 	public boolean checkLike(Member member, Member[] seat, int where){
@@ -322,7 +374,7 @@ public class ChangeSeat {
 		for(int i=0; i<likedMen.size(); i++){
 			if(selected) break;
 			if(likedMen.get(i).getSit() == 0){
-				for(int j=0; j<3; j++){
+				for(int j=0; j<m_member_num; j++){
 					if(j%2 == 0 && rightSeat[seatOrderMen[j]] == empty){
 						rightSeat[seatOrderMen[j]] = likedMen.get(i);
 						likedMen.get(i).setSit(1);
@@ -341,7 +393,7 @@ public class ChangeSeat {
 		for(int i=0; i<likedWomen.size(); i++){
 			if(selected) break;
 			if(likedWomen.get(i).getSit() == 0){
-				for(int j=0; j<3; j++){
+				for(int j=0; j<w_member_num; j++){
 					if(j%2 == 1 && rightSeat[seatOrderWomen[j]] == empty){
 						rightSeat[seatOrderWomen[j]] = likedWomen.get(i);
 						likedWomen.get(i).setSit(1);

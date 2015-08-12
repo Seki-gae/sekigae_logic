@@ -31,12 +31,12 @@ public class DoChangeSeat {
 		
 		//サンプル値代入
 		mA.setLike(wC);
-		mB.setLike(wC);
-		mC.setLike(wB);
-		mD.setLike(wA);
-		wA.setLike(mD);
+		mB.setLike(wB);
+		mC.setLike(wC);
+		mD.setLike(wC);
+		wA.setLike(mA);
 		wB.setLike(mA);
-		wC.setLike(mB);
+		wC.setLike(mD);
 		wD.setLike(mC);
 		
 		globals.memberList.add(mA);
