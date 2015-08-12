@@ -12,12 +12,13 @@ public class ChangeSeat {
 		
 		int m_member_num = 4;
 		int w_member_num = 4;
+		int member_num = m_member_num + w_member_num;
 		
-		Member[] rightSeat = new Member[(m_member_num + w_member_num) / 2];
-		Member[] leftSeat = new Member[m_member_num + w_member_num - rightSeat.length];
+		Member[] rightSeat = new Member[7];
+		Member[] leftSeat = new Member[7];
 		
-		//System.out.println(leftSeat.length);
-		//System.out.println(rightSeat.length);
+		System.out.println(leftSeat.length);
+		System.out.println(rightSeat.length);
 		
 		//10人分のメンバインスタンス生成。
 		Member mA = new Member("mA");
@@ -30,14 +31,14 @@ public class ChangeSeat {
 		Member wC = new Member("wC");
 		Member wD = new Member("wD");
 		Member wE = new Member("wE");
-		Member dammy = new Member("0");
+		Member empty = new Member("0");
 		
-		//notNullを避けるため、初期値としてmEを代入
+		//初期値としてemptyを代入
 		for(int i=0; i<rightSeat.length; i++){
-			rightSeat[i] = dammy;
+			rightSeat[i] = empty;
 		}
 		for(int i=0; i<leftSeat.length; i++){
-			leftSeat[i] = dammy;
+			leftSeat[i] = empty;
 		}
 		
 		
@@ -66,18 +67,12 @@ public class ChangeSeat {
 		//サンプル値代入
 		mA.setLike(wC);
 		mB.setLike(wC);
-		mC.setLike(wA);
-		mD.setLike(wB);
-		wA.setLike(mA);
-		wB.setLike(mB);
+		mC.setLike(wB);
+		mD.setLike(wA);
+		wA.setLike(mB);
+		wB.setLike(mC);
 		wC.setLike(mB);
-		wD.setLike(mA);
-		
-		mA.setLiked(2);
-		mB.setLiked(2);
-		wA.setLiked(1);
-		wB.setLiked(1);
-		wC.setLiked(2);
+		wD.setLike(mC);
 		
 		//気になるポイント２以上の人を探す
 		ArrayList<Member> likedMen = new ArrayList<>();
@@ -87,86 +82,138 @@ public class ChangeSeat {
 			}
 		}
 		ArrayList<Member> likedWomen = new ArrayList<>();
-		for(int i=0; i<men.size(); i++){
+		for(int i=0; i<women.size(); i++){
 			if(women.get(i).getLiked() > 1){
 				likedWomen.add(women.get(i));
 			}
 		}
-		//例の場合は　mA,mB　wC
+		
+		//↓↓↓↓↓①ポイント２以上の人を全て配置する。
 		
 		//気になるポイント２以上の男が２人の場合の処理
 		if(likedMen.size() == 2){
-			rightSeat[2] = likedMen.get(0);
+			rightSeat[3] = likedMen.get(0);
 			likedMen.get(0).setSit(1);
-			leftSeat[1] = likedMen.get(1);
+			leftSeat[2] = likedMen.get(1);
 			likedMen.get(0).setSit(1);
 			
 			//気になるポイント２以上の女がいる場合の処理
 			if(likedWomen.size() > 0){
+				
+				//ポイント女①の気になる人がポイント男の場合
 				if(likedWomen.get(0).getLike() == likedMen.get(0)){
-					rightSeat[1] = likedWomen.get(0);
+					rightSeat[2] = likedWomen.get(0);
 					likedWomen.get(0).setSit(1);
 				}else if(likedWomen.get(0).getLike() == likedMen.get(1)){
-					leftSeat[2] = likedWomen.get(0);
+					leftSeat[3] = likedWomen.get(0);
 					likedWomen.get(0).setSit(1);
 				}
 				
-				//ポイント女の場所が決まっていない場合
+				//ポイント女①の場所が決まっていない場合
 				if(likedWomen.get(0).getSit() == 0){
+					//ポイント男の気になる人がポイント女①の場合
 					if(likedMen.get(0).getLike() == likedWomen.get(0)){
-						rightSeat[1] = likedWomen.get(0);
+						rightSeat[2] = likedWomen.get(0);
 						likedWomen.get(0).setSit(1);
 					}else if(likedMen.get(1).getLike() == likedWomen.get(0)){
-						leftSeat[2] = likedWomen.get(0);
+						leftSeat[3] = likedWomen.get(0);
 						likedWomen.get(0).setSit(1);
 					}
 				}
 				
 				//気になるポイント２以上の女が２人いる場合の処理
 				if(likedWomen.size() == 2){
-					if(likedWomen.get(1).getLike() == likedMen.get(0)){
-						if(rightSeat[1] != dammy){
-							rightSeat[1] = likedWomen.get(1);
-							likedWomen.get(1).setSit(1);
-						}else{
-							leftSeat[2] = likedWomen.get(1);
-							likedWomen.get(1).setSit(1);
-						}
-					}else if(likedWomen.get(1).getLike() == likedMen.get(1)){
-						if(leftSeat[2] != dammy){
-							leftSeat[2] = likedWomen.get(1);
-							likedWomen.get(1).setSit(1);
-						}else{
-							rightSeat[1] = likedWomen.get(1);
-							likedWomen.get(1).setSit(1);
-						}
+					//ポイント女①の席が決まっている場合
+					if(rightSeat[2] != empty){
+						leftSeat[3] = likedWomen.get(1);
+						likedWomen.get(1).setSit(1);
+					}else if(leftSeat[3] != empty){
+						rightSeat[2] = likedWomen.get(1);
+						likedWomen.get(1).setSit(1);
 					}
-					
-					//気になるポイント女②の場所が決まっていない場合の処理
-					if(likedWomen.get(1).getSit() == 0){
-						if(rightSeat[1] != dammy){
-							leftSeat[2] = likedWomen.get(1);
+					//ポイント女①の席が決まっていない場合
+					else {
+						//ポイント女②の気になる人がポイント男の場合
+						if(likedWomen.get(1).getLike() == rightSeat[3]){
+							rightSeat[2] = likedWomen.get(1);
 							likedWomen.get(1).setSit(1);
-						}else if(leftSeat[2] != dammy){
-							rightSeat[1] = likedWomen.get(1);
+						}else if(likedWomen.get(1).getLike() == leftSeat[2]){
+							leftSeat[3] = likedWomen.get(1);
+							likedWomen.get(1).setSit(1);
+						}
+						//ポイント女②の席が決まっていない場合の処理
+						else if(likedMen.get(0).getLike() == likedWomen.get(1)){
+							rightSeat[2] = likedWomen.get(1);
 							likedWomen.get(1).setSit(1);
 						}else{
-							//
+							leftSeat[3] = likedWomen.get(1);
+							likedWomen.get(1).setSit(1);
 						}
 					}
 				}
-				
+				//ポイント女①の席が決まっていない場合、強制的に配置
+				if(likedWomen.get(0).getSit() == 0){
+					if(leftSeat[3] == empty){
+						leftSeat[3] = likedWomen.get(0);
+						likedWomen.get(0).setSit(1);
+					}else{
+						rightSeat[2] = likedWomen.get(0);
+						likedWomen.get(0).setSit(1);
+					}
+				}
 			}
 		}
 		
 		//気になるポイント２以上の男が１人の場合の処理
+		if(likedMen.size() == 1){
+			leftSeat[2] = likedMen.get(0);
+			likedMen.get(0).setSit(1);
+			
+			//気になるポイント２以上の女がいる場合の処理
+			if(likedWomen.size() > 0){
+				//ポイント女①の気になる人がポイント男の場合 または、ポイント男がポイント女①を好きな場合
+				if(likedWomen.get(0).getLike() == leftSeat[2] || leftSeat[2].getLike() == likedWomen.get(0)){
+					leftSeat[3] = likedWomen.get(0);
+					likedWomen.get(0).setSit(1);
+				}else{
+					rightSeat[2] = likedWomen.get(0);
+					likedWomen.get(0).setSit(1);
+				}
+				
+				//ポイント女が２人いる場合の処理
+				if(likedWomen.size() == 2){
+					if(leftSeat[3] == empty){
+						leftSeat[3] = likedWomen.get(1);
+						likedWomen.get(1).setSit(1);
+					}else{
+						rightSeat[2] = likedWomen.get(1);
+						likedWomen.get(1).setSit(1);
+					}
+				}
+			}
+		}
+		
+		//気になるポイント２以上の男がいない場合の処理
+		if(likedMen.size() == 0){
+			if(likedWomen.size() > 0){
+				leftSeat[3] = likedWomen.get(0);
+				likedWomen.get(0).setSit(1);
+				if(likedWomen.size() == 2){
+					rightSeat[2] = likedWomen.get(1);
+					likedWomen.get(1).setSit(1);
+				}
+			}
+		}
+		
+		//↑↑↑↑ここまでで①気になるポイント２以上の人の配置完了
+		
+		//↓↓↓↓②気になるポイント１の人を中心から順に配置していく
+		
+		
 		
 		//出力
-		for(int i=0; i<leftSeat.length; i++){
-			System.out.println("左側　"+ leftSeat[i].getName());
-		}
-		for(int i=0; i<rightSeat.length; i++){
-			System.out.println("右側　"+ rightSeat[i].getName());
+		for(int i=1; i<6; i++){
+			System.out.println("左側　"+ leftSeat[i].getName() + "　　右側　" + rightSeat[i].getName());
 		}
 	}
 }
