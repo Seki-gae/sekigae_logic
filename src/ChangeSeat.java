@@ -3,6 +3,8 @@ import java.util.ArrayList;
 public class ChangeSeat {
 	
 	Globals globals;
+	Member[] rightSeat = new Member[7];
+	Member[] leftSeat = new Member[7];
 	
 	public ChangeSeat(Globals globals){
 		this.globals = globals;
@@ -24,8 +26,7 @@ public class ChangeSeat {
 		int m_member_num = globals.m_member_num;
 		int w_member_num = globals.w_member_num;
 
-		Member[] rightSeat = new Member[7];
-		Member[] leftSeat = new Member[7];
+
 
 		//初期値としてemptyを代入
 		for(int i=0; i<rightSeat.length; i++){
@@ -195,6 +196,41 @@ public class ChangeSeat {
 		//↑↑↑↑ここまでで①気になるポイント２以上の人の配置完了
 
 		//↓↓↓↓②気になるポイント１の人を中心から順に配置していく
+		
+		//気になるポイント１の人を格納
+		likedMen.clear();
+		for(int i=0; i<men.size(); i++){
+			if(men.get(i).getLiked() == 1){
+				likedMen.add(men.get(i));
+			}
+		}
+		likedWomen.clear();
+		for(int i=0; i<women.size(); i++){
+			if(women.get(i).getLiked() == 1){
+				likedWomen.add(women.get(i));
+			}
+		}
+		
+		int[] menSeatNum = {3,2,1,4,5};
+		
+		//ポイント１男を配置
+		for(int i=0; i<likedMen.size(); i++){
+			for(int j=0; j<m_member_num; j++){
+				if(j%2 == 0 && rightSeat[menSeatNum[j]] == empty){
+					if(checkLike(likedMen.get(i), rightSeat, menSeatNum[j])){
+						rightSeat[menSeatNum[j]] = likedMen.get(i);
+						likedMen.get(i).setSit(1);
+					}
+				}
+				if(j%2 == 1 && leftSeat[menSeatNum[j]] == empty){
+					if(checkLike(likedMen.get(i), leftSeat, menSeatNum[j])){
+						leftSeat[menSeatNum[j]] = likedMen.get(i);
+						likedMen.get(i).setSit(1);
+					}
+				}
+			}
+		}
+		
 
 
 
@@ -204,9 +240,14 @@ public class ChangeSeat {
 		}
 	}
 
-	public boolean checkLike(int where){
-
-		return false;
+	public boolean checkLike(Member member, Member[] seat, int where){
+		if(member.getLike() == seat[where-1] || member.getLike() == seat[where+1]){
+			return true;
+		}else if(seat[where-1].getLike() == member || seat[where+1].getLike() == member){
+			return true;
+		}else{
+			return false;
+		}
 	}
 
 }
