@@ -1,40 +1,33 @@
 import java.util.ArrayList;
 import java.util.Collections;
 
-import org.omg.CosNaming.NamingContextExtPackage.AddressHelper;
 
 public class ChangeSeat {
 	
-	Globals globals;
 	Member[] rightSeat = new Member[7];
 	Member[] leftSeat = new Member[7];
 	int[] seatOrderMen = {3,2,1,4,5};
 	int[] seatOrderWomen = {3,2,1,4,5};
 	int m_member_num;
 	int w_member_num;
+	Member mA;
+	Member mB;
+	Member mC;
+	Member mD;
+	Member mE;
+	Member wA;
+	Member wB;
+	Member wC;
+	Member wD;
+	Member wE;
 	Member empty = new Member("0");
 	ArrayList<Member> likedMen = new ArrayList<>();
 	ArrayList<Member> likedWomen = new ArrayList<>();
 	
-	public ChangeSeat(Globals globals){
-		this.globals = globals;
+	public ChangeSeat(){
 	}
 
 	public void doChange(){
-
-		Member mA = globals.memberList.get(0);
-		Member mB = globals.memberList.get(1);
-		Member mC = globals.memberList.get(2);
-		Member mD = globals.memberList.get(3);
-		Member mE = globals.memberList.get(4);
-		Member wA = globals.memberList.get(5);
-		Member wB = globals.memberList.get(6);
-		Member wC = globals.memberList.get(7);
-		Member wD = globals.memberList.get(8);
-		Member wE = globals.memberList.get(9);
-		
-		m_member_num = globals.m_member_num;
-		w_member_num = globals.w_member_num;		
 
 		//初期値としてemptyを代入
 		for(int i=0; i<rightSeat.length; i++){
@@ -43,8 +36,6 @@ public class ChangeSeat {
 		for(int i=0; i<leftSeat.length; i++){
 			leftSeat[i] = empty;
 		}
-
-		int member_num = m_member_num + w_member_num;
 
 		ArrayList<Member> men = new ArrayList<>();
 		ArrayList<Member> women = new ArrayList<>();
@@ -230,23 +221,13 @@ public class ChangeSeat {
 		}
 		Collections.shuffle(likedWomen);
 		
-		//ポイント１の人の配置処理を３回繰り返す
-		for(int trial=0; trial<3; trial++){
-			setPoint1Member();
-		}
-		
-		setPoint1MemberRandom();
-		
-		//ポイント１の人の配置処理を３回繰り返す
-		for(int trial=0; trial<3; trial++){
-			setPoint1Member();
-		}
-		
-		setPoint1MemberRandom();
-		
-		//ポイント１の人の配置処理を３回繰り返す
-		for(int trial=0; trial<3; trial++){
-			setPoint1Member();
+		for(int i=0; i<3; i++){
+			//ポイント１の人の配置処理を３回繰り返す
+			for(int trial=0; trial<3; trial++){
+				setPoint1Member();
+			}
+
+			setPoint1MemberRandom();
 		}
 		
 		//出力
@@ -273,32 +254,19 @@ public class ChangeSeat {
 			}
 		}
 		Collections.shuffle(likedWomen);
-		//System.out.println(likedWomen.get(0).getName());
-		//System.out.println(likedWomen.get(1).getName());
 		
-		//配置処理を３回繰り返す
-		for(int trial=0; trial<3; trial++){
-			setPoint1Member();
-		}
-		
-		setPoint1MemberRandom();
-		
+		for(int i=1; i<5; i++){
+			//配置処理を３回繰り返す
+			for(int trial=0; trial<3; trial++){
+				setPoint1Member();
+			}
 
-		//配置処理を３回繰り返す
-		for(int trial=0; trial<3; trial++){
-			setPoint1Member();
+			setPoint1MemberRandom();
 		}
 		
-		setPoint1MemberRandom();
-		
-
-		//配置処理を３回繰り返す
-		for(int trial=0; trial<3; trial++){
-			setPoint1Member();
+		for(int i=1; i<3; i++){
+			setPoint1MemberRandom();
 		}
-		
-		setPoint1MemberRandom();
-		setPoint1MemberRandom();
 
 
 		//出力
@@ -410,6 +378,44 @@ public class ChangeSeat {
 				}
 			}
 		}
+	}
+	
+	void setMemberNum(int m_member_num, int w_member_num){
+		this.m_member_num = m_member_num;
+		this.w_member_num = w_member_num;
+	}
+	
+	void setMemberList(ArrayList<Member> memberList){
+		mA = memberList.get(0);
+		mB = memberList.get(1);
+		mC = memberList.get(2);
+		mD = memberList.get(3);
+		mE = memberList.get(4);
+		wA = memberList.get(5);
+		wB = memberList.get(6);
+		wC = memberList.get(7);
+		wD = memberList.get(8);
+		wE = memberList.get(9);
+	}
+	
+	ArrayList<Member> getLeftSeat(){
+		ArrayList<Member> seatOrder = new ArrayList<>();
+		for (int i=1; i<6; i++){
+			if(leftSeat[i] != empty){
+				seatOrder.add(leftSeat[i]);
+			}
+		}
+		return seatOrder;
+	}
+	
+	ArrayList<Member> getRightSeat(){
+		ArrayList<Member> seatOrder = new ArrayList<>();
+		for (int i=1; i<6; i++){
+			if(rightSeat[i] != empty){
+				seatOrder.add(rightSeat[i]);
+			}
+		}
+		return seatOrder;
 	}
 
 }
