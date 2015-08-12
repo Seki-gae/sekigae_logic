@@ -93,7 +93,7 @@ public class ChangeSeat {
 			rightSeat[3] = likedMen.get(0);
 			likedMen.get(0).setSit(1);
 			leftSeat[2] = likedMen.get(1);
-			likedMen.get(0).setSit(1);
+			likedMen.get(1).setSit(1);
 
 			//気になるポイント２以上の女がいる場合の処理
 			if(likedWomen.size() > 0){
@@ -297,6 +297,7 @@ public class ChangeSeat {
 			setPoint1Member();
 		}
 		
+		setPoint1MemberRandom();
 		setPoint1MemberRandom();
 
 
